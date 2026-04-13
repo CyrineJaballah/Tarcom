@@ -14,5 +14,7 @@ WORKDIR /app
 
 COPY --from=build /app/spring-boot/target/*.jar app.jar
 
+COPY backend/.env .env
+
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
