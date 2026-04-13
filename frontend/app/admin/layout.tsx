@@ -1,0 +1,197 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import type { FormEvent, ReactNode } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { ChevronLeft, Gauge, Layers3, LogOut, Shield, Sparkles, Users } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import ThemeToggle from '@/components/ThemeToggle';
+
+const ADMIN_USERNAME = 'AdminTarcom';
+const ADMIN_PASSWORD = 'T@rcom1234@';
+const ADMIN_SESSION_KEY = 'tarcom_admin_unlocked';
+
+const NAV_ITEMS = [
+  { href: '/admin', label: 'Dashboard', icon: Gauge },
+  { href: '/admin/archive', label: 'Archive', icon: Layers3 },
+  { href: '/admin/technicians', label: 'Techniciens', icon: Users },
+];
+
+export default function AdminLayout({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    setIsUnlocked(sessionStorage.getItem(ADMIN_SESSION_KEY) === 'true');
+    setMounted(true);
+  }, []);
+
+  const handleLogin = (event: FormEvent) => {
+    event.preventDefault();
+    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+      sessionStorage.setItem(ADMIN_SESSION_KEY, 'true');
+      setIsUnlocked(true);
+      setError('');
+      setPassword('');
+      return;
+    }
+    setError('Identifiants admin invalides.');
+  };
+
+  const handleLogout = () => {
+    sessionStorage.removeItem(ADMIN_SESSION_KEY);
+    setIsUnlocked(false);
+    setUsername('');
+    setPassword('');
+    setError('');
+  };
+
+  if (!mounted) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6">
+        <div className="glass-card p-8 text-muted-foreground">Chargement...</div>
+      </div>
+    );
+  }
+
+  if (!isUnlocked) {
+    return (
+      <div className="min-h-screen p-4 md:p-8">
+        <div className="mx-auto max-w-md">
+          <div className="mb-6 flex items-center justify-between">
+            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
+              <ChevronLeft className="h-4 w-4" />
+              Accueil
+            </Link>
+            <ThemeToggle />
+          </div>
+
+          <div className="hero-panel p-8">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <Shield className="h-5 w-5" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold">Accès Admin</h1>
+                <p className="text-sm text-muted-foreground">Connectez-vous pour ouvrir le tableau de bord.</p>
+              </div>
+            </div>
+
+            <form className="space-y-4" onSubmit={handleLogin}>
+              <div>
+                <label className="mb-2 block text-sm font-medium">Utilisateur</label>
+                <Input value={username} onChange={(event) => setUsername(event.target.value)} placeholder="AdminTarcom" autoComplete="username" />
+              </div>
+              <div>
+                <label className="mb-2 block text-sm font-medium">Mot de passe</label>
+                <Input value={password} onChange={(event) => setPassword(event.target.value)} type="password" placeholder="••••••••••" autoComplete="current-password" />
+              </div>
+              {error && <p className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/20 dark:text-red-200">{error}</p>}
+              <Button type="submit" className="w-full rounded-full">Déverrouiller</Button>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen lg:grid lg:grid-cols-[280px_1fr]">
+      <aside className="hidden border-r border-border/70 bg-background/70 p-5 backdrop-blur-xl lg:flex lg:flex-col">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold tracking-[0.22em] text-primary uppercase">Tarcom</p>
+            <p className="text-xs text-muted-foreground">Admin workspace</p>
+          </div>
+        </div>
+
+        <nav className="mt-8 space-y-2">
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const active = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition-all duration-300 ${
+                  active
+                    ? 'bg-primary text-primary-foreground shadow-md shadow-primary/10'
+                    : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
+                }`}
+              >
+                <Icon className="h-4 w-4" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="mt-auto space-y-3 pt-6">
+          <div className="rounded-2xl border border-border/70 bg-card/80 p-4 text-sm text-muted-foreground">
+            <p className="font-medium text-foreground">Navigation</p>
+            <p className="mt-1">Dashboard, archive et techniciens sont séparés.</p>
+          </div>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Button variant="outline" className="flex-1 rounded-full" onClick={handleLogout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Déconnexion
+            </Button>
+          </div>
+        </div>
+      </aside>
+
+      <div className="flex min-h-screen flex-col">
+        <header className="sticky top-0 z-30 border-b border-border/70 bg-background/70 backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-3 px-4 py-4 md:px-8 lg:hidden">
+            <div>
+              <p className="text-sm font-semibold tracking-[0.22em] text-primary uppercase">Tarcom</p>
+              <p className="text-xs text-muted-foreground">Admin workspace</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              <Button variant="outline" size="sm" onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Quitter
+              </Button>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 overflow-x-auto px-4 pb-4 md:px-8 lg:hidden">
+            {NAV_ITEMS.map((item) => {
+              const Icon = item.icon;
+              const active = pathname === item.href;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                    active
+                      ? 'border-primary bg-primary text-primary-foreground'
+                      : 'border-border/70 bg-card/80 text-muted-foreground'
+                  }`}
+                >
+                  <Icon className="h-4 w-4" />
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
+        </header>
+
+        <main className="flex-1 px-4 py-6 md:px-8 md:py-8">
+          {children}
+        </main>
+      </div>
+    </div>
+  );
+}
