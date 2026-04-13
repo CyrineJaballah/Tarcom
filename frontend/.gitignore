@@ -17,3 +17,4 @@ node_modules
 target/
 .env*
 !,env.example
+package-lock.json
