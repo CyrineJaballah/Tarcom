@@ -15,6 +15,5 @@ node_modules
 .next/
 .DS_Store
 target/
-resources/
 .env*
 !,env.example
