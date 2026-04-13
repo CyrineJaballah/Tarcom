@@ -4,6 +4,7 @@ WORKDIR /app
 
 # Copy only backend first (faster builds)
 COPY backend/spring-boot ./spring-boot
+COPY backend/.env ./spring-boot/.env
 
 WORKDIR /app/spring-boot
 RUN mvn clean package -DskipTests
@@ -14,7 +15,7 @@ WORKDIR /app
 
 COPY --from=build /app/spring-boot/target/*.jar app.jar
 
-COPY backend/.env .env
+COPY --from=build /app/spring-boot/.env .env
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
