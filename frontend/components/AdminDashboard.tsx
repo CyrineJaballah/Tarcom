@@ -94,10 +94,25 @@ interface SubmissionEditDraft {
 }
 
 const API_BASE_URL = getApiBaseUrl();
-const DOC_ORDER = ['identityRecto', 'identityVerso', 'photo', 'drivingLicenseRecto', 'drivingLicenseVerso', 'bankDetails', 'healthInsurance', 'medicalCertificate'];
+const DOC_ORDER = ['fiche', 'identityRecto', 'identityVerso', 'photo', 'drivingLicenseRecto', 'drivingLicenseVerso', 'bankDetails', 'healthInsurance', 'medicalCertificate'];
 
 const labelOf = (status: SubmissionStatus) =>
   status === 'approved' ? 'Approuvé' : status === 'rejected' ? 'Rejeté' : status === 'hold' ? 'En pause' : 'En attente';
+
+const documentLabel = (docType: string): string => {
+  const labels: Record<string, string> = {
+    fiche: 'Fiche de renseignement',
+    identityRecto: "Pièce d'identité (Recto)",
+    identityVerso: "Pièce d'identité (Verso)",
+    photo: "Photo d'identité",
+    drivingLicenseRecto: 'Permis (Recto)',
+    drivingLicenseVerso: 'Permis (Verso)',
+    bankDetails: 'RIB officiel',
+    healthInsurance: 'Mutuelle / SS',
+    medicalCertificate: 'Certificat médical',
+  };
+  return labels[docType] || docType;
+};
 
 const badgeClassOf = (status: SubmissionStatus) =>
   status === 'approved'
@@ -627,7 +642,7 @@ export default function AdminDashboard() {
                     ].map(([label, value], index) => (
                       <div key={label as string} className={`rounded-xl border border-border/70 p-3 ${index % 2 === 0 ? 'bg-background/40' : 'bg-muted/20'}`}>
                         <p className="text-xs text-muted-foreground">{label}</p>
-                        <p className="mt-1 break-words font-medium">{value || '-'}</p>
+                        <p className="mt-1 break-all font-medium">{value || '-'}</p>
                       </div>
                     ))}
                   </div>
@@ -671,7 +686,7 @@ export default function AdminDashboard() {
                       <div key={key} className="animate-in fade-in slide-in-from-bottom-3 duration-300 rounded-2xl border border-border/70 p-4" style={{ animationDelay: `${index * 80}ms` }}>
                         <div className="mb-3 flex items-start justify-between gap-3">
                           <div>
-                            <p className="font-medium">{doc.documentType}</p>
+                            <p className="font-medium">{documentLabel(key)}</p>
                             <p className="text-xs text-muted-foreground">{doc.fileName}</p>
                           </div>
                           <Badge variant="secondary">{fmtSize(doc.fileSize)}</Badge>

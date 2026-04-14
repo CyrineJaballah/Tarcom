@@ -15,7 +15,7 @@ export default function Home() {
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-sm font-semibold tracking-[0.24em] text-primary uppercase">Tarcom</p>
+              <p className="text-sm font-semibold tracking-[0.24em] text-primary uppercase">Notre société</p>
               <p className="text-xs text-muted-foreground">Portail de dossiers</p>
             </div>
           </div>
@@ -42,10 +42,10 @@ export default function Home() {
 
             <div className="space-y-4">
               <h1 className="max-w-2xl text-5xl font-bold tracking-tight md:text-6xl lg:text-7xl">
-                Un portail plus clair pour vos dossiers Tarcom.
+                Un portail plus clair pour vos dossiers.
               </h1>
               <p className="max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-                Déposez vos documents, suivez les informations essentielles et laissez votre espace admin centraliser les dossiers en un seul endroit.
+                Remplissez votre fiche, téléchargez vos documents et soumettez votre dossier en quelques minutes. Simple et sécurisé.
               </p>
             </div>
 
@@ -56,18 +56,18 @@ export default function Home() {
                   <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link href="/admin">
+              {/* <Link href="/admin">
                 <Button variant="outline" size="lg" className="rounded-full px-7">
                   Espace admin
                 </Button>
-              </Link>
+              </Link> */}
             </div>
 
             <div className="grid gap-4 sm:grid-cols-3">
               {[
-                ['Rapide', 'Une structure en étapes qui évite les écrans trop longs.'],
-                ['Adaptatif', 'Design confortable sur téléphone, tablette et grand écran.'],
-                ['Lisible', 'Un bleu plus doux et des contrastes propres en clair comme en sombre.'],
+                ['Intuitif', 'Une interface simple qui guide chaque étape, étape par étape.'],
+                ['Responsive', 'Soumettez votre dossier depuis votre téléphone, tablette ou ordinateur.'],
+                ['Accessible', 'Un design clair avec des contrastes optimisés le jour comme la nuit.'],
               ].map(([title, text]) => (
                 <div key={title} className="glass-card p-4">
                   <BadgeCheck className="h-5 w-5 text-primary" />
@@ -85,9 +85,10 @@ export default function Home() {
                 <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Flux de travail</p>
                 <div className="mt-4 space-y-3">
                   {[
-                    ['1. Remplir', 'Les coordonnées et la fiche principale.'],
-                    ['2. Télécharger', 'Les documents requis en un seul passage.'],
-                    ['3. Envoyer', 'Validation finale et suivi côté admin.'],
+                    ['1. Informations', 'Vos coordonnées de base en un passage rapide.'],
+                    ['2. Fiche complète', 'Remplissez la fiche de renseignement détaillée.'],
+                    ['3. Documents', 'Téléchargez vos pièces justificatives en toute sécurité.'],
+                    ['4. Validation', 'Vérifiez tout et envoyez votre dossier complet.'],
                   ].map(([step, text]) => (
                     <div key={step} className="flex items-start gap-3 rounded-2xl border border-border/70 bg-card/80 p-3">
                       <div className="mt-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
@@ -104,14 +105,14 @@ export default function Home() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="glass-card p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Sécurité</p>
-                  <p className="mt-2 text-2xl font-bold">Atlas + uploads</p>
-                  <p className="mt-2 text-sm text-muted-foreground">Les dossiers restent centralisés dans MongoDB et les fichiers sont servis proprement.</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Protection</p>
+                  <p className="mt-2 text-2xl font-bold">Vos données</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Vos informations sont protégées et stockées de manière sécurisée.</p>
                 </div>
                 <div className="glass-card p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Theme</p>
-                  <p className="mt-2 text-2xl font-bold">Clair / sombre</p>
-                  <p className="mt-2 text-sm text-muted-foreground">Le bouton en haut permet de passer d’un mode à l’autre quand vous voulez.</p>
+                  <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Confort</p>
+                  <p className="mt-2 text-2xl font-bold">Jour et nuit</p>
+                  <p className="mt-2 text-sm text-muted-foreground">Basculez entre le mode clair et sombre selon votre préférence.</p>
                 </div>
               </div>
             </div>

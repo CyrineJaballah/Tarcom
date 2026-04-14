@@ -59,8 +59,12 @@ public class SubmissionController {
             submission.setPhone(phone);
             submission.setSubmittedAt(LocalDateTime.now());
 
+            // Create submission first (minimal info)
             Submission created = submissionService.createSubmission(submission);
             
+            // Collect all documents (fiche + other documents)
+            Map<String, DocumentInfo> documents = new HashMap<>();
+
             // Handle fiche file
             MultipartFile ficheFile = request.getFile("fiche");
             if (ficheFile != null && !ficheFile.isEmpty()) {
@@ -72,14 +76,10 @@ public class SubmissionController {
                 ficheInfo.setFileSize(ficheFile.getSize());
                 ficheInfo.setContentType(ficheFile.getContentType());
                 ficheInfo.setUploadedAt(LocalDateTime.now());
-                
-                Map<String, DocumentInfo> documents = new HashMap<>();
                 documents.put("fiche", ficheInfo);
-                created.setDocuments(documents);
             }
 
-            Map<String, DocumentInfo> documents = created.getDocuments() != null ? created.getDocuments() : new HashMap<>();
-
+            // Handle other documents
             Iterator<String> fileNames = request.getFileNames();
             while (fileNames.hasNext()) {
                 String paramName = fileNames.next();
@@ -104,6 +104,7 @@ public class SubmissionController {
                 documents.put(documentType, documentInfo);
             }
 
+            // Save all documents at once (single database write)
             if (!documents.isEmpty()) {
                 created.setDocuments(documents);
                 submissionService.saveSubmission(created);

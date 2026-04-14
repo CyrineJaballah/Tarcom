@@ -292,18 +292,7 @@ export default function SubmissionForm() {
             </div>
           )}
 
-          {/* ── Form ── */}.0000000000000000000000000000000
-
-
-
-
-
-
-
-
-
-
-                                        )àççççççççççççççççççççoooooooooo  
+          {/* ── Form ── */}
           <form onSubmit={handleSubmit} className="space-y-6">
 
             {/* Step 1 — Coordonnées */}
