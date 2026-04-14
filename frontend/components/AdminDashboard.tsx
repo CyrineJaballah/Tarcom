@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { getApiBaseUrl } from '@/lib/api-url';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Archive,
@@ -92,7 +93,7 @@ interface SubmissionEditDraft {
   ficheRenseignement: FicheRenseignement;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = getApiBaseUrl();
 const DOC_ORDER = ['identityRecto', 'identityVerso', 'photo', 'drivingLicenseRecto', 'drivingLicenseVerso', 'bankDetails', 'healthInsurance', 'medicalCertificate'];
 
 const labelOf = (status: SubmissionStatus) =>

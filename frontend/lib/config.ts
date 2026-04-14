@@ -1,3 +1,5 @@
+import { getApiBaseUrl } from './api-url';
+
 // Document Upload Configuration
 export const DOCUMENT_CONFIG = {
   MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB
@@ -41,7 +43,7 @@ export const DB_CONFIG = {
 // API Configuration
 export const API_CONFIG = {
   SUBMISSION_ENDPOINT: '/api/submissions',
-  BASE_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
+  BASE_URL: getApiBaseUrl(),
 };
 
 // Document Requirements

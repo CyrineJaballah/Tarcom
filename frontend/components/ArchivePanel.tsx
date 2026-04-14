@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { getApiBaseUrl } from '@/lib/api-url';
 import { Download, Eye, Filter, Image as ImageIcon, Search, Sparkles } from 'lucide-react';
 
 type ArchiveStatus = 'approved' | 'cancelled';
@@ -30,7 +31,7 @@ interface Submission {
   ficheRenseignement?: Record<string, string>;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = getApiBaseUrl();
 
 const fmtDate = (value?: string) =>
   value

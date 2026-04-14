@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { getApiBaseUrl } from '@/lib/api-url';
 
-const BACKEND_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const BACKEND_BASE_URL = getApiBaseUrl(process.env.BACKEND_URL || process.env.NEXT_PUBLIC_API_URL);
 export const dynamic = 'force-dynamic';
 
 async function readPayload(response: Response) {

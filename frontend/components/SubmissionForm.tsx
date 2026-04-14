@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getApiBaseUrl } from '@/lib/api-url';
 import DocumentUploader, { UploadedDocument } from './DocumentUploader';
 import FicheRenseignement from './FicheRenseignement';
 
@@ -153,8 +154,7 @@ export default function SubmissionForm() {
         if (document) submitData.append(`documents[${key}]`, document.file);
       });
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
-      const response = await fetch(`${apiUrl}/submissions`, {
+      const response = await fetch(`${getApiBaseUrl()}/submissions`, {
         method: 'POST',
         body: submitData,
       });

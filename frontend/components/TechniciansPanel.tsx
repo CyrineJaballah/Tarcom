@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { getApiBaseUrl } from '@/lib/api-url';
 import { CheckCircle2, Edit, Plus, Search, ShieldCheck, Trash2, Users } from 'lucide-react';
 
 interface Technician {
@@ -28,7 +29,7 @@ interface TechnicianStats {
   subdivisions: Array<{ name: string; count: number; percent: number }>;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api';
+const API_BASE_URL = getApiBaseUrl();
 
 export default function TechniciansPanel() {
   const [technicians, setTechnicians] = useState<Technician[]>([]);
