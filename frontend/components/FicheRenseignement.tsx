@@ -1,149 +1,214 @@
 'use client';
 
-import { AlertCircle } from 'lucide-react';
+import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-
-interface FicheRenseignementData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  dateOfBirth: string;
-  placeOfBirth: string;
-  nationality: string;
-  address: string;
-  city: string;
-  postalCode: string;
-  emergencyName: string;
-  emergencyPhone: string;
-  emergencyRelation: string;
-  socialSecurityNumber: string;
-  healthMutual: string;
-  healthMutualNumber: string;
-  drivingLicense: string;
-  licenseExpiryDate: string;
-}
+import { BadgeCheck } from 'lucide-react';
 
 interface FicheRenseignementProps {
-  data: FicheRenseignementData;
-  onChange: (field: string, value: string) => void;
+  data?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    dateOfBirth?: string;
+    placeOfBirth?: string;
+    nationality?: string;
+    address?: string;
+    city?: string;
+    postalCode?: string;
+    emergencyName?: string;
+    emergencyPhone?: string;
+    emergencyRelation?: string;
+    socialSecurityNumber?: string;
+    healthMutual?: string;
+    healthMutualNumber?: string;
+    drivingLicense?: string;
+    licenseExpiryDate?: string;
+  };
+  onChange?: (field: string, value: string) => void;
 }
 
-type Field = {
-  key: keyof FicheRenseignementData;
-  label: string;
-  type: string;
-  required?: boolean;
-  readOnly?: boolean;
-};
-
-export default function FicheRenseignement({ data, onChange }: FicheRenseignementProps) {
-  const sections: Array<{ title: string; description: string; fields: Field[] }> = [
-    {
-      title: 'Identité',
-      description: 'Les champs importants restent regroupés pour aller plus vite.',
-      fields: [
-        { key: 'firstName', label: 'Prénom', type: 'text', required: true, readOnly: true },
-        { key: 'lastName', label: 'Nom', type: 'text', required: true, readOnly: true },
-        { key: 'dateOfBirth', label: 'Date de naissance', type: 'date', required: true },
-        { key: 'placeOfBirth', label: 'Lieu de naissance', type: 'text', required: true },
-        { key: 'nationality', label: 'Nationalité', type: 'text', required: true },
-      ],
-    },
-    {
-      title: 'Contact',
-      description: 'On reprend vos informations principales sans vous faire scroller davantage.',
-      fields: [
-        { key: 'email', label: 'Email', type: 'email', required: true, readOnly: true },
-        { key: 'phone', label: 'Téléphone', type: 'tel', required: true, readOnly: true },
-        { key: 'address', label: 'Adresse', type: 'text', required: true },
-        { key: 'city', label: 'Ville', type: 'text', required: true },
-        { key: 'postalCode', label: 'Code postal', type: 'text', required: true },
-      ],
-    },
-    {
-      title: 'Urgence',
-      description: 'Un contact rapide en cas de besoin.',
-      fields: [
-        { key: 'emergencyName', label: 'Nom et prénom', type: 'text', required: true },
-        { key: 'emergencyPhone', label: 'Téléphone', type: 'tel', required: true },
-        { key: 'emergencyRelation', label: 'Lien', type: 'text', required: true },
-      ],
-    },
-    {
-      title: 'Sécurité sociale',
-      description: 'Optionnel, mais utile si vous l’avez déjà sous la main.',
-      fields: [
-        { key: 'socialSecurityNumber', label: 'Numéro de S.S.', type: 'text' },
-        { key: 'healthMutual', label: 'Mutuelle', type: 'text' },
-        { key: 'healthMutualNumber', label: 'N° mutuelle', type: 'text' },
-      ],
-    },
-    {
-      title: 'Permis',
-      description: 'Renseignez les informations liées à la conduite.',
-      fields: [
-        { key: 'drivingLicense', label: 'Numéro de permis', type: 'text', required: true },
-        { key: 'licenseExpiryDate', label: 'Date d’expiration', type: 'date', required: true },
-      ],
-    },
-  ];
+export default function FicheRenseignement({ data = {}, onChange = () => {} }: FicheRenseignementProps) {
+  const handleChange = (field: string, value: string) => {
+    onChange(field, value);
+  };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-start gap-3 rounded-2xl border border-blue-200/70 bg-blue-50/80 p-4 text-blue-800 shadow-sm dark:border-blue-900/50 dark:bg-blue-950/20 dark:text-blue-200">
-        <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0" />
-        <p className="text-sm">
-          Les champs marqués d’un astérisque sont obligatoires. Le reste peut être complété plus tard si besoin.
-        </p>
+    <Card className="glass-card animate-in fade-in slide-in-from-bottom-4 duration-500 p-5 md:p-6">
+      <div className="mb-4 flex items-center justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-semibold md:text-2xl">Fiche de renseignement</h2>
+          <p className="text-sm text-muted-foreground">Informations administratives et personnelles.</p>
+        </div>
+        <BadgeCheck className="h-5 w-5 text-primary" />
       </div>
 
-      <div className="space-y-4">
-        {sections.map((section) => (
-          <section key={section.title} className="glass-card p-4 md:p-5">
-            <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h3 className="text-base font-semibold text-foreground">{section.title}</h3>
-                <p className="text-sm text-muted-foreground">{section.description}</p>
+      <div className="space-y-6">
+        {/* Personal Info */}
+        <div>
+          <h3 className="mb-3 text-sm font-semibold text-muted-foreground">Informations personnelles</h3>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="dateOfBirth" className="text-sm font-medium">Date de naissance *</Label>
+              <Input
+                id="dateOfBirth"
+                type="date"
+                value={data.dateOfBirth || ''}
+                onChange={(e) => handleChange('dateOfBirth', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="placeOfBirth" className="text-sm font-medium">Lieu de naissance *</Label>
+              <Input
+                id="placeOfBirth"
+                placeholder="Ville ou village"
+                value={data.placeOfBirth || ''}
+                onChange={(e) => handleChange('placeOfBirth', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="nationality" className="text-sm font-medium">Nationalité *</Label>
+              <Input
+                id="nationality"
+                placeholder="Ex: Française"
+                value={data.nationality || ''}
+                onChange={(e) => handleChange('nationality', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="socialSecurityNumber" className="text-sm font-medium">Numéro de Sécurité Sociale</Label>
+              <Input
+                id="socialSecurityNumber"
+                placeholder="13 chiffres"
+                value={data.socialSecurityNumber || ''}
+                onChange={(e) => handleChange('socialSecurityNumber', e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Address */}
+        <div>
+          <h3 className="mb-3 text-sm font-semibold text-muted-foreground">Adresse</h3>
+          <div className="grid gap-3">
+            <div className="space-y-2">
+              <Label htmlFor="address" className="text-sm font-medium">Adresse *</Label>
+              <Input
+                id="address"
+                placeholder="Rue, numéro"
+                value={data.address || ''}
+                onChange={(e) => handleChange('address', e.target.value)}
+              />
+            </div>
+            <div className="grid gap-3 md:grid-cols-3">
+              <div className="space-y-2">
+                <Label htmlFor="postalCode" className="text-sm font-medium">Code postal *</Label>
+                <Input
+                  id="postalCode"
+                  placeholder="5 chiffres"
+                  value={data.postalCode || ''}
+                  onChange={(e) => handleChange('postalCode', e.target.value)}
+                />
               </div>
-              <span className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-                {section.fields.length} champs
-              </span>
+              <div className="space-y-2 md:col-span-2">
+                <Label htmlFor="city" className="text-sm font-medium">Ville *</Label>
+                <Input
+                  id="city"
+                  placeholder="Votre ville"
+                  value={data.city || ''}
+                  onChange={(e) => handleChange('city', e.target.value)}
+                />
+              </div>
             </div>
+          </div>
+        </div>
 
-            <div className="overflow-hidden rounded-2xl border border-border/70">
-              {section.fields.map((field, index) => {
-                const value = data[field.key] || '';
-                return (
-                  <div
-                    key={field.key}
-                    className={`grid gap-3 border-b border-border/70 bg-background/40 p-3 last:border-b-0 md:grid-cols-[220px_1fr] md:items-center ${
-                      index % 2 === 0 ? 'md:bg-background/50' : ''
-                    }`}
-                  >
-                    <Label htmlFor={field.key} className="text-sm font-medium">
-                      {field.label}
-                      {field.required && <span className="ml-1 text-destructive">*</span>}
-                    </Label>
-                    <Input
-                      id={field.key}
-                      type={field.type}
-                      value={value}
-                      onChange={(event) => onChange(field.key, event.target.value)}
-                      placeholder={field.readOnly ? field.label : `Saisir ${field.label.toLowerCase()}`}
-                      readOnly={field.readOnly}
-                      disabled={field.readOnly}
-                      className={`h-10 ${field.readOnly ? 'bg-muted/60 text-muted-foreground' : ''}`}
-                      required={field.required}
-                    />
-                  </div>
-                );
-              })}
+        {/* Driving License */}
+        <div>
+          <h3 className="mb-3 text-sm font-semibold text-muted-foreground">Permis de conduire</h3>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="drivingLicense" className="text-sm font-medium">Numéro du permis *</Label>
+              <Input
+                id="drivingLicense"
+                placeholder="Ex: 12AB345678"
+                value={data.drivingLicense || ''}
+                onChange={(e) => handleChange('drivingLicense', e.target.value)}
+              />
             </div>
-          </section>
-        ))}
+            <div className="space-y-2">
+              <Label htmlFor="licenseExpiryDate" className="text-sm font-medium">Date d'expiration *</Label>
+              <Input
+                id="licenseExpiryDate"
+                type="date"
+                value={data.licenseExpiryDate || ''}
+                onChange={(e) => handleChange('licenseExpiryDate', e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Health Info */}
+        <div>
+          <h3 className="mb-3 text-sm font-semibold text-muted-foreground">Couverture santé</h3>
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="healthMutual" className="text-sm font-medium">Mutuelle / Sécurité Sociale</Label>
+              <Input
+                id="healthMutual"
+                placeholder="Nom de l'organisme"
+                value={data.healthMutual || ''}
+                onChange={(e) => handleChange('healthMutual', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="healthMutualNumber" className="text-sm font-medium">Numéro affilié</Label>
+              <Input
+                id="healthMutualNumber"
+                placeholder="Votre numéro d'affiliation"
+                value={data.healthMutualNumber || ''}
+                onChange={(e) => handleChange('healthMutualNumber', e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Emergency Contact */}
+        <div>
+          <h3 className="mb-3 text-sm font-semibold text-muted-foreground">Contact d'urgence</h3>
+          <div className="grid gap-3 md:grid-cols-3">
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="emergencyName" className="text-sm font-medium">Nom</Label>
+              <Input
+                id="emergencyName"
+                placeholder="Prénom et nom"
+                value={data.emergencyName || ''}
+                onChange={(e) => handleChange('emergencyName', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="emergencyRelation" className="text-sm font-medium">Lien</Label>
+              <Input
+                id="emergencyRelation"
+                placeholder="Parent, ami..."
+                value={data.emergencyRelation || ''}
+                onChange={(e) => handleChange('emergencyRelation', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2 md:col-span-3">
+              <Label htmlFor="emergencyPhone" className="text-sm font-medium">Téléphone</Label>
+              <Input
+                id="emergencyPhone"
+                type="tel"
+                placeholder="+33 6 12 34 56 78"
+                value={data.emergencyPhone || ''}
+                onChange={(e) => handleChange('emergencyPhone', e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </Card>
   );
 }

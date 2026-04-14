@@ -41,9 +41,9 @@ export default function DocumentChecklist({
         {items.map((item) => (
           <div key={item.id} className="flex items-center gap-2">
             {item.completed ? (
-              <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400 flex-shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400 shrink-0" />
             ) : (
-              <Circle className="w-4 h-4 text-border flex-shrink-0" />
+              <Circle className="w-4 h-4 text-border shrink-0" />
             )}
             <span className={`text-xs ${item.completed ? 'text-green-600 dark:text-green-400 line-through' : 'text-muted-foreground'}`}>
               {item.name}

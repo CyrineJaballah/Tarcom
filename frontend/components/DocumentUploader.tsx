@@ -97,7 +97,7 @@ export default function DocumentUploader({
           className={`cursor-pointer p-4 transition-all md:p-5 ${
             isDragging
               ? 'bg-primary/5'
-              : 'bg-gradient-to-br from-background to-muted/30 hover:bg-muted/40'
+              : 'bg-linear-to-br from-background to-muted/30 hover:bg-muted/40'
           }`}
         >
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
@@ -175,7 +175,7 @@ export default function DocumentUploader({
 
       {error && (
         <div className="flex items-start gap-2 border-t border-red-200/80 bg-red-50 px-4 py-3 text-red-700 dark:border-red-900/60 dark:bg-red-950/20 dark:text-red-300">
-          <AlertCircle className="mt-0.5 h-4 w-4 flex-shrink-0" />
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <p className="text-xs">{error}</p>
         </div>
       )}

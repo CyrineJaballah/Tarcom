@@ -7,7 +7,6 @@ import com.tarcom.dossiers.model.Submission;
 import com.tarcom.dossiers.service.FileStorageService;
 import com.tarcom.dossiers.service.SubmissionService;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -39,7 +37,6 @@ public class SubmissionController {
     private final FileStorageService fileStorageService;
     private final ObjectMapper objectMapper;
 
-    @Autowired
     public SubmissionController(SubmissionService submissionService, FileStorageService fileStorageService) {
         this.submissionService = submissionService;
         this.fileStorageService = fileStorageService;
@@ -54,7 +51,6 @@ public class SubmissionController {
             String lastName = request.getParameter("lastName");
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
-            String ficheDataJson = request.getParameter("ficheData");
 
             Submission submission = new Submission();
             submission.setFirstName(firstName);
@@ -63,13 +59,26 @@ public class SubmissionController {
             submission.setPhone(phone);
             submission.setSubmittedAt(LocalDateTime.now());
 
-            if (ficheDataJson != null && !ficheDataJson.isEmpty()) {
-                FicheRenseignement fiche = objectMapper.readValue(ficheDataJson, FicheRenseignement.class);
-                submission.setFicheRenseignement(fiche);
+            Submission created = submissionService.createSubmission(submission);
+            
+            // Handle fiche file
+            MultipartFile ficheFile = request.getFile("fiche");
+            if (ficheFile != null && !ficheFile.isEmpty()) {
+                ObjectId fileId = fileStorageService.storeFile(ficheFile, "fiche", created.getId().toString());
+                DocumentInfo ficheInfo = new DocumentInfo();
+                ficheInfo.setDocumentType("fiche");
+                ficheInfo.setFileId(fileId);
+                ficheInfo.setFileName(ficheFile.getOriginalFilename());
+                ficheInfo.setFileSize(ficheFile.getSize());
+                ficheInfo.setContentType(ficheFile.getContentType());
+                ficheInfo.setUploadedAt(LocalDateTime.now());
+                
+                Map<String, DocumentInfo> documents = new HashMap<>();
+                documents.put("fiche", ficheInfo);
+                created.setDocuments(documents);
             }
 
-            Submission created = submissionService.createSubmission(submission);
-            Map<String, DocumentInfo> documents = new HashMap<>();
+            Map<String, DocumentInfo> documents = created.getDocuments() != null ? created.getDocuments() : new HashMap<>();
 
             Iterator<String> fileNames = request.getFileNames();
             while (fileNames.hasNext()) {

@@ -3,7 +3,6 @@ package com.tarcom.dossiers.controller;
 import com.tarcom.dossiers.model.Technician;
 import com.tarcom.dossiers.repository.TechnicianRepository;
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +27,6 @@ public class TechnicianController {
 
     private final TechnicianRepository technicianRepository;
 
-    @Autowired
     public TechnicianController(TechnicianRepository technicianRepository) {
         this.technicianRepository = technicianRepository;
     }

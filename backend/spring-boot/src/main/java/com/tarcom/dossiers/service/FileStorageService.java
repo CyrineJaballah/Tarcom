@@ -58,7 +58,6 @@ public class FileStorageService {
         if (file == null) {
             throw new RuntimeException("File not found");
         }
-        
         return gridFsTemplate.getResource(file);
     }
     

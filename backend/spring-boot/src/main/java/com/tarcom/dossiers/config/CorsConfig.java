@@ -1,8 +1,8 @@
 package com.tarcom.dossiers.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
@@ -11,9 +11,11 @@ public class CorsConfig implements WebMvcConfigurer {
     private String allowedOrigins;
 
     @Override
-    public void addCorsMappings(CorsRegistry registry) {
+    @Override\n    public void addCorsMappings(@org.springframework.lang.NonNull CorsRegistry registry) {
+        @java.lang.SuppressWarnings("null")
+        String[] origins = allowedOrigins != null ? allowedOrigins.split(",") : new String[]{"http://localhost:3000"};
         registry.addMapping("/**")
-            .allowedOrigins(allowedOrigins.split(","))
+            .allowedOrigins(origins)
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
             .allowedHeaders("*")
             .allowCredentials(true);

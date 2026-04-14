@@ -49,6 +49,7 @@ public class SubmissionService {
     /**
      * Obtenir une soumission par ID
      */
+    @java.lang.SuppressWarnings("null")
     public Optional<Submission> getSubmissionById(ObjectId id) {
         return submissionRepository.findById(id);
     }
@@ -63,6 +64,7 @@ public class SubmissionService {
     /**
      * Mettre à jour une soumission
      */
+    @java.lang.SuppressWarnings("null")
     public Submission updateSubmission(ObjectId id, Submission submission) {
         Optional<Submission> existing = submissionRepository.findById(id);
         
@@ -83,6 +85,7 @@ public class SubmissionService {
     /**
      * Mettre à jour le statut
      */
+    @java.lang.SuppressWarnings("null")
     public Submission updateStatus(ObjectId id, String status) {
         Optional<Submission> existing = submissionRepository.findById(id);
         
@@ -96,6 +99,7 @@ public class SubmissionService {
         throw new RuntimeException("Submission not found");
     }
 
+    @java.lang.SuppressWarnings("null")
     public Submission archiveSubmission(ObjectId id, String archiveStatus, String reason) {
         Optional<Submission> existing = submissionRepository.findById(id);
 
@@ -114,6 +118,7 @@ public class SubmissionService {
     /**
      * Supprimer une soumission
      */
+    @java.lang.SuppressWarnings("null")
     public void deleteSubmission(ObjectId id) {
         submissionRepository.deleteById(id);
     }
