@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getApiBaseUrl } from '@/lib/api-url';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Archive,
@@ -197,8 +198,8 @@ export default function AdminDashboard() {
       setLoading(true);
       setError('');
       const [response, statsResponse] = await Promise.all([
-        fetch('/api/submissions?status=all', { cache: 'no-store' }),
-        fetch(`${API_BASE_URL}/technicians/stats`, { cache: 'no-store' }),
+        fetchWithRetry(`${API_BASE_URL}/submissions?status=all`, { cache: 'no-store' }),
+        fetchWithRetry(`${API_BASE_URL}/technicians/stats`, { cache: 'no-store' }),
       ]);
       const payload = await response.json().catch(() => ({}));
       const statsPayload = await statsResponse.json().catch(() => ({}));
@@ -236,7 +237,7 @@ export default function AdminDashboard() {
           if (!doc?.fileId || !doc.contentType) return null;
           const previewable = doc.contentType.startsWith('image/') || doc.contentType === 'application/pdf';
           if (!previewable) return null;
-          const res = await fetch(`${API_BASE_URL}/files/${doc.fileId}`);
+          const res = await fetchWithRetry(`${API_BASE_URL}/files/${doc.fileId}`);
           if (!res.ok) return null;
           const url = URL.createObjectURL(await res.blob());
           objectUrls.push(url);
@@ -279,7 +280,7 @@ export default function AdminDashboard() {
   const updateStatus = async (id: string, status: SubmissionStatus) => {
     try {
       setActionState({ id, status });
-      const response = await fetch(`${API_BASE_URL}/submissions/${id}/status`, {
+      const response = await fetchWithRetry(`${API_BASE_URL}/submissions/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status }),
@@ -315,7 +316,7 @@ export default function AdminDashboard() {
 
     try {
       setActionState({ id: editingSubmission.id, status: editingSubmission.status });
-      const response = await fetch(`${API_BASE_URL}/submissions/${editingSubmission.id}`, {
+      const response = await fetchWithRetry(`${API_BASE_URL}/submissions/${editingSubmission.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -350,7 +351,7 @@ export default function AdminDashboard() {
 
     try {
       setActionState({ id: archiveTarget.id, status: archiveTarget.status });
-      const response = await fetch(`${API_BASE_URL}/submissions/${archiveTarget.id}/archive`, {
+      const response = await fetchWithRetry(`${API_BASE_URL}/submissions/${archiveTarget.id}/archive`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

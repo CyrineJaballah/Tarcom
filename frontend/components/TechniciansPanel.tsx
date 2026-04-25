@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getApiBaseUrl } from '@/lib/api-url';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 import { CheckCircle2, Edit, Plus, Search, ShieldCheck, Trash2, Users } from 'lucide-react';
 
 interface Technician {
@@ -44,8 +45,8 @@ export default function TechniciansPanel() {
     try {
       setLoading(true);
       const [techRes, statsRes] = await Promise.all([
-        fetch(`${API_BASE_URL}/technicians`, { cache: 'no-store' }),
-        fetch(`${API_BASE_URL}/technicians/stats`, { cache: 'no-store' }),
+        fetchWithRetry(`${API_BASE_URL}/technicians`, { cache: 'no-store' }),
+        fetchWithRetry(`${API_BASE_URL}/technicians/stats`, { cache: 'no-store' }),
       ]);
       const techPayload = await techRes.json().catch(() => []);
       const statsPayload = await statsRes.json().catch(() => ({}));
@@ -87,7 +88,7 @@ export default function TechniciansPanel() {
   const submit = async () => {
     try {
       const url = editingId ? `${API_BASE_URL}/technicians/${editingId}` : `${API_BASE_URL}/technicians`;
-      const response = await fetch(url, {
+      const response = await fetchWithRetry(url, {
         method: editingId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -114,7 +115,7 @@ export default function TechniciansPanel() {
   };
 
   const removeTechnician = async (id: string) => {
-    await fetch(`${API_BASE_URL}/technicians/${id}`, { method: 'DELETE' });
+    await fetchWithRetry(`${API_BASE_URL}/technicians/${id}`, { method: 'DELETE' });
     await loadData();
   };
 

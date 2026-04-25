@@ -15,8 +15,8 @@ const ADMIN_SESSION_KEY = 'tarcom_admin_unlocked';
 
 const NAV_ITEMS = [
   { href: '/admin', label: 'Dashboard', icon: Gauge },
-  { href: '/admin/archive', label: 'Archive', icon: Layers3 },
-  { href: '/admin/technicians', label: 'Techniciens', icon: Users },
+  { href: '/admin/submissions', label: 'Dossiers', icon: Layers3 },
+  { href: '/admin/settings', label: 'Paramètres', icon: Shield },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

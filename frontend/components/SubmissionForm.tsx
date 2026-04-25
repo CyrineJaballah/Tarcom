@@ -20,6 +20,7 @@ import { Label } from '@/components/ui/label';
 import { getApiBaseUrl } from '@/lib/api-url';
 import DocumentUploader, { UploadedDocument } from './DocumentUploader';
 import FicheRenseignement from './FicheRenseignement';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 
 type StepKey = 'info' | 'fiche' | 'documents' | 'review';
 
@@ -60,6 +61,7 @@ export default function SubmissionForm() {
   const [submitting, setSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [retryCount, setRetryCount] = useState(0);
   const [currentStep, setCurrentStep] = useState<StepKey>('info');
 
   const requiredDocsCompleted = useMemo(
@@ -121,6 +123,7 @@ export default function SubmissionForm() {
     setSubmitting(true);
     setSubmitStatus('idle');
     setErrorMessage('');
+    setRetryCount(0);
 
     try {
       if (!completion.review) {
@@ -141,16 +144,23 @@ export default function SubmissionForm() {
         if (doc) submitData.append(`documents[${key}]`, doc.file);
       });
 
-      const response = await fetch(`${getApiBaseUrl()}/submissions`, {
-        method: 'POST',
-        body: submitData,
-      });
+      const response = await fetchWithRetry(
+        `${getApiBaseUrl()}/submissions`,
+        {
+          method: 'POST',
+          body: submitData,
+        },
+        10, // max retries
+        10000, // delay 10s
+        (attempt) => setRetryCount(attempt)
+      );
 
       if (!response.ok) {
         const payload = await response.json().catch(() => ({}));
         throw new Error(payload.error || payload.message || "Erreur lors de l'envoi");
       }
 
+      // Success!
       setSubmitStatus('success');
       setTimeout(() => {
         setFormData({ firstName: '', lastName: '', email: '', phone: '' });
@@ -164,6 +174,7 @@ export default function SubmissionForm() {
       setErrorMessage(error instanceof Error ? error.message : 'Erreur');
     } finally {
       setSubmitting(false);
+      setRetryCount(0);
     }
   };
 
@@ -266,6 +277,20 @@ export default function SubmissionForm() {
               </div>
             </div>
           </section>
+
+          {/* ── Toast: waking up ── */}
+          {submitting && retryCount > 0 && (
+            <div className="flex items-start gap-3 rounded-2xl border border-blue-200 bg-blue-50/90 p-4 text-blue-900 shadow-sm dark:border-blue-900/50 dark:bg-blue-950/20 dark:text-blue-100 animate-pulse">
+              <Clock3 className="mt-0.5 h-5 w-5 shrink-0" />
+              <div>
+                <h3 className="font-semibold text-blue-800 dark:text-blue-300">Activation du serveur...</h3>
+                <p className="text-sm text-blue-700 dark:text-blue-200">
+                  Le serveur est en cours de démarrage (Standard sur Render). 
+                  Ceci prend généralement 50 secondes. Tentative {retryCount}/10 en cours...
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* ── Toast: success ── */}
           {submitStatus === 'success' && (
@@ -520,7 +545,10 @@ export default function SubmissionForm() {
                   className="sm:ml-auto sm:w-40"
                   disabled={!completion.review || submitting}
                 >
-                  {submitting ? 'Envoi…' : 'Soumettre'}
+                  {submitting 
+                    ? (retryCount > 0 ? `Réveil... (${retryCount})` : 'Envoi…') 
+                    : 'Soumettre'
+                  }
                 </Button>
               )}
             </div>

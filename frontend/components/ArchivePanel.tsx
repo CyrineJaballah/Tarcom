@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { getApiBaseUrl } from '@/lib/api-url';
+import { fetchWithRetry } from '@/lib/fetch-retry';
 import { Download, Eye, Filter, Image as ImageIcon, Search, Sparkles } from 'lucide-react';
 
 type ArchiveStatus = 'approved' | 'cancelled';
@@ -57,7 +58,7 @@ export default function ArchivePanel() {
     const load = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_BASE_URL}/submissions?archived=true`, { cache: 'no-store' });
+        const response = await fetchWithRetry(`${API_BASE_URL}/submissions?archived=true`, { cache: 'no-store' });
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) throw new Error(payload.error || 'Impossible de charger l’archive');
         setItems(Array.isArray(payload) ? payload : []);
@@ -80,7 +81,7 @@ export default function ArchivePanel() {
     const controller = new AbortController();
 
     (async () => {
-      const res = await fetch(`${API_BASE_URL}/files/${selected.documents!.photo!.fileId}`, { signal: controller.signal });
+      const res = await fetchWithRetry(`${API_BASE_URL}/files/${selected.documents!.photo!.fileId}`, { signal: controller.signal });
       if (!res.ok) return;
       const url = URL.createObjectURL(await res.blob());
       if (active) setPreviewUrl(url);
