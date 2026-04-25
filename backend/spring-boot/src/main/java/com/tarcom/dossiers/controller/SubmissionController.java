@@ -30,7 +30,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/submissions")
-@CrossOrigin(origins = {"http://localhost:3000", "http://localhost:3001"})
 public class SubmissionController {
 
     private final SubmissionService submissionService;
@@ -219,6 +218,17 @@ public class SubmissionController {
             ObjectId objectId = new ObjectId(id);
             submissionService.deleteSubmission(objectId);
             return ResponseEntity.ok(Map.of("success", true, "message", "Soumission supprimée"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}/files/{fileId}")
+    public ResponseEntity<?> deleteFile(@PathVariable String id, @PathVariable String fileId) {
+        try {
+            ObjectId submissionId = new ObjectId(id);
+            Submission updated = submissionService.deleteFileFromSubmission(submissionId, fileId);
+            return ResponseEntity.ok(updated);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

@@ -21,6 +21,7 @@ import { getApiBaseUrl } from '@/lib/api-url';
 import DocumentUploader, { UploadedDocument } from './DocumentUploader';
 import FicheRenseignement from './FicheRenseignement';
 import { fetchWithRetry } from '@/lib/fetch-retry';
+import { savePendingSubmission } from '@/lib/db';
 
 type StepKey = 'info' | 'fiche' | 'documents' | 'review';
 
@@ -123,58 +124,48 @@ export default function SubmissionForm() {
     setSubmitting(true);
     setSubmitStatus('idle');
     setErrorMessage('');
-    setRetryCount(0);
 
     try {
       if (!completion.review) {
         throw new Error('Veuillez compléter tous les champs obligatoires.');
       }
 
-      const submitData = new FormData();
-      submitData.append('firstName', formData.firstName);
-      submitData.append('lastName', formData.lastName);
-      submitData.append('email', formData.email);
-      submitData.append('phone', formData.phone);
-
-      if (ficheFile) {
-        submitData.append('fiche', ficheFile.file);
-      }
-
+      // Convert documents record to a plain objects map for IDB
+      const docsMap: Record<string, File> = {};
       Object.entries(documents).forEach(([key, doc]) => {
-        if (doc) submitData.append(`documents[${key}]`, doc.file);
+        if (doc?.file) docsMap[key] = doc.file;
       });
 
-      const response = await fetchWithRetry(
-        `${getApiBaseUrl()}/submissions`,
-        {
-          method: 'POST',
-          body: submitData,
-        },
-        10, // max retries
-        10000, // delay 10s
-        (attempt) => setRetryCount(attempt)
-      );
+      // 1. Save to local storage for background sync
+      const entryId = `sub_${Date.now()}`;
+      await savePendingSubmission({
+        id: entryId,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        fiche: ficheFile?.file || null,
+        documents: docsMap,
+        timestamp: Date.now()
+      });
 
-      if (!response.ok) {
-        const payload = await response.json().catch(() => ({}));
-        throw new Error(payload.error || payload.message || "Erreur lors de l'envoi");
-      }
-
-      // Success!
+      // 2. Success UI immediately (to unblock user)
       setSubmitStatus('success');
+      
+      // Cleanup
       setTimeout(() => {
         setFormData({ firstName: '', lastName: '', email: '', phone: '' });
         setDocuments(EMPTY_DOCUMENTS);
         setFicheFile(undefined);
         setCurrentStep('info');
         setSubmitStatus('idle');
-      }, 1800);
+        setSubmitting(false);
+      }, 2000);
+
     } catch (error) {
       setSubmitStatus('error');
       setErrorMessage(error instanceof Error ? error.message : 'Erreur');
-    } finally {
       setSubmitting(false);
-      setRetryCount(0);
     }
   };
 

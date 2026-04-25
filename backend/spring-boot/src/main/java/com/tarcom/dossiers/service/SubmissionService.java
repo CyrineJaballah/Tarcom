@@ -122,6 +122,24 @@ public class SubmissionService {
     public void deleteSubmission(ObjectId id) {
         submissionRepository.deleteById(id);
     }
+
+    /**
+     * Supprimer un fichier spécifique d'une soumission
+     */
+    @java.lang.SuppressWarnings("null")
+    public Submission deleteFileFromSubmission(ObjectId submissionId, String fileId) {
+        Optional<Submission> existing = submissionRepository.findById(submissionId);
+        if (existing.isPresent()) {
+            Submission submission = existing.get();
+            if (submission.getDocuments() != null) {
+                submission.getDocuments().entrySet().removeIf(entry -> 
+                    entry.getValue().getFileId().toString().equals(fileId)
+                );
+                return saveSubmission(submission);
+            }
+        }
+        throw new RuntimeException("Submission or file not found");
+    }
     
     /**
      * Obtenir toutes les soumissions par statut

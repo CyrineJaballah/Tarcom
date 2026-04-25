@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
+import SubmissionStatusToast from '@/components/SubmissionStatusToast'
 
 export const metadata: Metadata = {
   title: 'Portail de Soumission de Dossiers',
@@ -36,6 +37,7 @@ export default function RootLayout({
       <body className="font-sans antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
+          <SubmissionStatusToast />
           <Analytics />
         </ThemeProvider>
       </body>

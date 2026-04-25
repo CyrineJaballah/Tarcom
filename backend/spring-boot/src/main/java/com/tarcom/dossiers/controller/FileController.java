@@ -38,9 +38,15 @@ public class FileController {
                 contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
             }
 
+            // 'inline' allows the browser to show the file directly (preview)
+            // We remove the filename from inline for some browser PDF viewers to avoid auto-download prompts
+            String disposition = contentType.contains("pdf") ? "inline" : "inline; filename=\"" + filename + "\"";
+
             return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, disposition)
+                .header(HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, HttpHeaders.CONTENT_DISPOSITION)
+                .header("X-Content-Type-Options", "nosniff")
                 .body(new InputStreamResource(resource.getInputStream()));
         } catch (java.io.IOException e) {
             return ResponseEntity.internalServerError().build();

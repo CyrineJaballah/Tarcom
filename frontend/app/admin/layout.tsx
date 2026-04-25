@@ -62,39 +62,60 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
   if (!isUnlocked) {
     return (
-      <div className="min-h-screen p-4 md:p-8">
-        <div className="mx-auto max-w-md">
-          <div className="mb-6 flex items-center justify-between">
-            <Link href="/" className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground">
-              <ChevronLeft className="h-4 w-4" />
-              Accueil
+      <div className="min-h-screen p-4 md:p-8 flex items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-slate-950">
+        {/* Soft Background Auras */}
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/10 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-500/10 rounded-full blur-[100px] animate-pulse" />
+        
+        <div className="relative z-10 w-full max-w-md animate-in fade-in zoom-in duration-700">
+          <div className="mb-8 flex flex-col items-center text-center">
+            <Link href="/" className="group mb-6 flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground bg-white/50 dark:bg-white/5 px-4 py-2 rounded-full border border-border/40 backdrop-blur-sm">
+              <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              Retour à l'accueil
             </Link>
-            <ThemeToggle />
+            <div className="flex h-16 w-16 items-center justify-center rounded-[2rem] bg-primary shadow-xl shadow-primary/20 text-primary-foreground mb-4">
+              <Shield className="h-8 w-8" />
+            </div>
+            <h1 className="text-3xl font-bold tracking-tight">Bonjour Admin ! 👋</h1>
+            <p className="text-muted-foreground mt-2">Prêt à gérer vos dossiers aujourd'hui ?</p>
           </div>
 
-          <div className="hero-panel p-8">
-            <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary/10 text-primary">
-                <Shield className="h-5 w-5" />
+          <div className="hero-panel p-8 rounded-[2.5rem] border-none shadow-2xl backdrop-blur-2xl bg-white/70 dark:bg-slate-900/70">
+            <form className="space-y-6" onSubmit={handleLogin}>
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Utilisateur</label>
+                <Input 
+                  value={username} 
+                  onChange={(event) => setUsername(event.target.value)} 
+                  placeholder="AdminTarcom" 
+                  className="h-12 rounded-2xl border-border/40 bg-white/50 dark:bg-black/20 focus:bg-white"
+                  autoComplete="username" 
+                />
               </div>
-              <div>
-                <h1 className="text-2xl font-bold">Accès Admin</h1>
-                <p className="text-sm text-muted-foreground">Connectez-vous pour ouvrir le tableau de bord.</p>
+              <div className="space-y-2">
+                <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground ml-1">Mot de passe</label>
+                <Input 
+                  value={password} 
+                  onChange={(event) => setPassword(event.target.value)} 
+                  type="password" 
+                  placeholder="••••••••••" 
+                  className="h-12 rounded-2xl border-border/40 bg-white/50 dark:bg-black/20 focus:bg-white"
+                  autoComplete="current-password" 
+                />
               </div>
-            </div>
-
-            <form className="space-y-4" onSubmit={handleLogin}>
-              <div>
-                <label className="mb-2 block text-sm font-medium">Utilisateur</label>
-                <Input value={username} onChange={(event) => setUsername(event.target.value)} placeholder="AdminTarcom" autoComplete="username" />
-              </div>
-              <div>
-                <label className="mb-2 block text-sm font-medium">Mot de passe</label>
-                <Input value={password} onChange={(event) => setPassword(event.target.value)} type="password" placeholder="••••••••••" autoComplete="current-password" />
-              </div>
-              {error && <p className="rounded-2xl border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-900/50 dark:bg-red-950/20 dark:text-red-200">{error}</p>}
-              <Button type="submit" className="w-full rounded-full">Déverrouiller</Button>
+              {error && (
+                <p className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs font-medium text-red-700 dark:border-red-900/50 dark:bg-red-950/20 dark:text-red-200 animate-in slide-in-from-top-2">
+                  {error}
+                </p>
+              )}
+              <Button type="submit" className="w-full h-12 rounded-2xl font-bold shadow-lg shadow-primary/20 bg-primary hover:scale-[1.02] transition-transform">
+                Accéder au Dashboard
+              </Button>
             </form>
+          </div>
+          
+          <div className="mt-8 text-center">
+             <ThemeToggle />
           </div>
         </div>
       </div>
