@@ -322,17 +322,17 @@ export default function SubmissionForm() {
                   <BadgeCheck className="h-5 w-5 text-primary" />
                 </div>
                 <div className="grid gap-3 md:grid-cols-2">
-                  <Field label="Prénom" htmlFor="firstName">
-                    <Input id="firstName" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="Jean" />
+                  <Field label="Prénom *" htmlFor="firstName">
+                    <Input id="firstName" name="firstName" value={formData.firstName} onChange={handleInputChange} placeholder="Jean" required />
                   </Field>
-                  <Field label="Nom" htmlFor="lastName">
-                    <Input id="lastName" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Dupont" />
+                  <Field label="Nom *" htmlFor="lastName">
+                    <Input id="lastName" name="lastName" value={formData.lastName} onChange={handleInputChange} placeholder="Dupont" required />
                   </Field>
-                  <Field label="Email" htmlFor="email">
-                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="jean@example.com" />
+                  <Field label="Email *" htmlFor="email">
+                    <Input id="email" name="email" type="email" value={formData.email} onChange={handleInputChange} placeholder="jean@example.com" required />
                   </Field>
-                  <Field label="Téléphone" htmlFor="phone">
-                    <Input id="phone" name="phone" type="tel" value={formData.phone} onChange={handleInputChange} placeholder="+33 6 12 34 56 78" />
+                  <Field label="Téléphone *" htmlFor="phone">
+                    <Input id="phone" name="phone" type="tel" value={formData.phone} onChange={handleInputChange} placeholder="+33 6 12 34 56 78" required />
                   </Field>
                 </div>
               </Card>
@@ -503,7 +503,7 @@ export default function SubmissionForm() {
               )}
 
               {currentStep === 'info' && (
-                <Button type="button" className="sm:ml-auto sm:w-40" onClick={() => goTo('fiche')}>
+                <Button type="button" className="sm:ml-auto sm:w-40" disabled={!completion.personal} onClick={() => goTo('fiche')}>
                   Continuer <ArrowRight className="h-4 w-4" />
                 </Button>
               )}

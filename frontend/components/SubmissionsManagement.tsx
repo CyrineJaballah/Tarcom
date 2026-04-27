@@ -179,10 +179,10 @@ export default function SubmissionsManagement() {
     if (submissions.length === 0) return;
     const headers = ['Nom', 'Prénom', 'Email', 'Téléphone', 'Statut', 'Date Soumission'];
     const rows = submissions.map(s => [
-      s.lastName, s.firstName, s.email, s.phone, s.status, 
+      s.lastName, s.firstName, s.email, s.phone, s.status,
       new Date(s.submittedAt || s.createdAt || '').toLocaleDateString('fr-FR')
     ]);
-    const csvContent = "data:text/csv;charset=utf-8," 
+    const csvContent = "data:text/csv;charset=utf-8,"
       + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");

@@ -51,11 +51,22 @@ public class SubmissionController {
             String email = request.getParameter("email");
             String phone = request.getParameter("phone");
 
+            // Validate required fields
+            if (firstName == null || firstName.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "error", "Le prénom est obligatoire"));
+            }
+            if (lastName == null || lastName.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "error", "Le nom est obligatoire"));
+            }
+            if (email == null || email.isBlank()) {
+                return ResponseEntity.badRequest().body(Map.of("success", false, "error", "L'email est obligatoire"));
+            }
+
             Submission submission = new Submission();
-            submission.setFirstName(firstName);
-            submission.setLastName(lastName);
-            submission.setEmail(email);
-            submission.setPhone(phone);
+            submission.setFirstName(firstName.trim());
+            submission.setLastName(lastName.trim());
+            submission.setEmail(email.trim());
+            submission.setPhone(phone != null ? phone.trim() : "");
             submission.setSubmittedAt(LocalDateTime.now());
 
             // Create submission first (minimal info)
